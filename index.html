@@ -10,7 +10,7 @@
 <style>
   :root{--bg:#0f1626;--panel:#1a2238;--panel2:#232d49;--panel3:#2b3656;--line:#37456a;--ink:#eef2fb;--muted:#a6b1d4;
     --primary:#6d72ff;--primary2:#9aa0ff;--accent:#1db98a;--gold:#ffc24a;--danger:#ff6b7e;
-    --move:#1f9e76;--turn:#bd7a1c;--loop:#3f5ad6;--cond:#c44d7e;--func:#1a9fc2;--get:#9a4db0;
+    --move:#1f9e76;--turn:#a8680f;--loop:#3f5ad6;--cond:#c44d7e;--func:#1a9fc2;--get:#9a4db0;
     --shadow:0 2px 12px rgba(0,0,0,.28);--font:'Nunito','Noto Sans Thai',system-ui,sans-serif;--mono:'JetBrains Mono','Consolas',monospace;}
   *{box-sizing:border-box}html,body{height:100%}
   body{margin:0;font-family:var(--font);color:var(--ink);height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:15px;
@@ -102,11 +102,12 @@
   .pblock{cursor:pointer;border-radius:12px;padding:9px;font-weight:700;font-size:13px;color:#f3f7ff;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:none;transition:transform .1s,filter .1s;min-height:44px;white-space:nowrap}
   .pblock:hover{filter:brightness(1.12)}
   .pblock:active{cursor:grabbing}
-  .pblock .pl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .pblock .pl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;text-shadow:0 1px 2px rgba(0,0,0,.45)}
   .cmdchip{font-family:var(--mono);background:#11182c;border:1px solid var(--line);color:#86efd8;border-radius:9px;padding:9px 8px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px;display:flex;align-items:center;justify-content:center;transition:.1s}
   .cmdchip:hover{border-color:var(--accent);color:#aef7e8;background:#152138}
   .pblock:hover{transform:translateY(-2px)}
-  .pblock .ic,.block .bhead .ic{font-size:17px;line-height:1;flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:transparent;color:#f3f7ff;box-shadow:none;font-weight:900}
+  /* colorblind-safe: every block's icon is a white glyph on a consistent dark chip, so shape (not just hue) distinguishes block types */
+  .pblock .ic,.block .bhead .ic{font-size:17px;line-height:1;flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:rgba(0,0,0,.3);color:#fff;box-shadow:none;font-weight:900}
   .workspace{flex:1;min-height:50px;overflow:auto;background:#141b2e;border:2px dashed var(--line);border-radius:13px;padding:11px}
   .dropzone{min-height:36px;border-radius:10px;padding:5px;transition:.1s}
   .dropzone.empty{border:2px dashed #46537f;background:repeating-linear-gradient(45deg,#161e34,#161e34 10px,#1b2440 10px,#1b2440 20px)}
@@ -115,8 +116,9 @@
   .block{margin:4px 0;border-radius:11px;color:#f3f7ff;box-shadow:none;cursor:grab;animation:bin .18s ease}
   @keyframes bin{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
   .block.running{outline:3px solid var(--gold);box-shadow:0 0 18px rgba(255,200,72,.9);transform:scale(1.02)}
+  .block.failed{outline:3px solid var(--danger);box-shadow:0 0 18px rgba(255,107,126,.9)}
   .block .bhead{display:flex;align-items:center;gap:7px;padding:6px 9px;font-weight:800;font-size:13.5px;flex-wrap:nowrap;min-width:0;line-height:1.1}
-  .block .bhead .blabel{white-space:nowrap}
+  .block .bhead .blabel{white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.45)}
   .block .bctl{margin-left:auto;display:flex;gap:4px}
   .bctl button{border:none;background:rgba(0,0,0,.28);color:#fff;border-radius:7px;width:26px;height:26px;cursor:pointer;font-weight:800;font-size:13px}
   .bctl button:hover{background:rgba(0,0,0,.5)}
@@ -130,13 +132,15 @@
   .apiref{flex:none;font-size:12px;color:var(--muted);margin-top:7px;line-height:1.8;font-weight:600}
   .apiref code{background:var(--panel2);padding:2px 7px;border-radius:6px;color:#86efd8;font-weight:700;font-family:var(--mono)}
   .runline{flex:none;font-family:var(--mono);font-size:12.5px;color:var(--gold);background:#11182c;border:1px solid var(--line);border-radius:9px;padding:7px 11px;margin-top:8px;font-weight:600}
+  .runline.fail{color:#ffc4cb;border-color:var(--danger);background:#3a1f25}
   .hintbox{flex:none;font-size:13px;color:#dde3f6;margin-top:8px;background:var(--panel2);border-radius:10px;padding:8px 12px;display:none}
   .actionbar{flex:none;display:flex;gap:8px;align-items:center;margin-top:10px;padding:9px;background:var(--panel2);border-radius:13px;flex-wrap:wrap}
   .btn{border:none;border-radius:11px;padding:9px 13px;font-size:14px;font-weight:700;cursor:pointer;color:#fff;transition:transform .1s,filter .1s;font-family:var(--font);white-space:nowrap}
   .btn:active{transform:scale(.96)}.btn:hover{filter:brightness(1.1)}
   .btn.run{background:var(--accent);color:#03251f;font-size:15px;padding:10px 18px;box-shadow:0 2px 0 #0c8d7c}
   .btn.run:active{box-shadow:0 1px 0 #0c8d7c}
-  .btn.step{background:var(--primary)}.btn.reset,.btn.sol{background:var(--panel3);border:1px solid var(--line)}
+  .btn.step{background:var(--primary)}.btn.reset,.btn.sol,.btn.undo{background:var(--panel3);border:1px solid var(--line)}
+  .btnico{width:16px;height:16px;vertical-align:-3px}
   .btn.reset{padding:9px 12px;font-size:16px}
   .btn:disabled{opacity:.45;cursor:not-allowed}
   .speedsel{margin-left:auto;background:var(--panel3);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-weight:800;font-size:14px;font-family:var(--font);cursor:pointer}
@@ -163,6 +167,8 @@
   .lptopic>summary .chev{margin-left:auto;transition:transform .2s;color:var(--muted)}
   .lptopic[open]>summary .chev{transform:rotate(90deg)}
   .lptopic>summary .tdiff{font-size:10.5px;color:var(--gold);font-weight:800;letter-spacing:1px}.lptopic>summary .tdiff .o{color:#4a5680}
+  .lptopic>summary .tprog{font-size:11px;font-weight:800;color:var(--muted);background:var(--panel3);border-radius:999px;padding:1px 8px}
+  .lptopic>summary .tprog.full{color:#03251f;background:var(--accent)}
   .lplevel{display:flex;align-items:center;gap:9px;width:100%;height:44px;box-sizing:border-box;text-align:left;border:none;background:transparent;color:var(--ink);padding:0 13px;font-size:13px;font-weight:700;cursor:pointer;border-top:1px solid #2a3656}
   .lplevel:hover{background:rgba(109,114,255,.2)}
   .lplevel.cur{background:rgba(255,200,72,.14)}
@@ -236,6 +242,7 @@
     <div class="actionbar">
       <button class="btn run" id="runBtn"><i class="ti ti-player-play"></i> <span data-i="run">รัน</span></button>
       <button class="btn step" id="stepBtn"><i class="ti ti-stairs"></i> <span data-i="step">ทีละขั้น</span></button>
+      <button class="btn undo" id="undoBtn" style="display:none"><svg class="btnico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-4 -4l4 -4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/></svg> <span data-i="undo">เลิกทำ</span></button>
       <button class="btn reset" id="resetBtn" title="รีเซ็ต"><i class="ti ti-refresh"></i></button>
       <button class="btn sol" id="solBtn"><span data-i="sol">เฉลย</span></button>
       <select class="speedsel" id="speed" title="ความเร็ว">
@@ -344,10 +351,11 @@ class Sim{constructor(lv){const toSet=cs=>new Set((cs||[]).map(c=>cellKey(c[0],c
 const $=id=>document.getElementById(id);const canvas=$('canvas'),ctx=canvas.getContext('2d');
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 const PAD=10;let CELL=46,boardW=300,boardH=200,gridT={ox:PAD,oy:PAD,cs:46};
-/* The 🐜 emoji glyph is drawn ~35° tilted facing up-left; this FIXED rotation
-   levels it to face right (east). It never changes with direction — the gold
-   arrow shows travel direction. So the ant is always flat + right-facing. */
-const ANT_FIX=145.1*Math.PI/180;
+/* The 🐜 system emoji (Segoe) is a side-view ant drawn diagonally (legs down).
+   No single fixed rotation makes it upright AND flat AND facing east — rotating
+   it to face east tips it upside-down. So we keep its natural upright orientation
+   (ANT_FIX=0, no rotation) and rely on the gold direction arrow for travel dir. */
+const ANT_FIX=0;
 function sizeBoard(){const wrap=$('canvaswrap');if(!wrap||!curGrid)return;const ww=wrap.clientWidth||500,wh=wrap.clientHeight||340;CELL=Math.max(16,Math.min(72,Math.floor(Math.min((ww-2*PAD)/curGrid.cols,(wh-2*PAD)/curGrid.rows))));applyCanvasSize();}
 function applyCanvasSize(){const g=curGrid;if(!g)return;const dpr=window.devicePixelRatio||1;boardW=g.cols*CELL+2*PAD;boardH=g.rows*CELL+2*PAD;canvas.width=Math.round(boardW*dpr);canvas.height=Math.round(boardH*dpr);canvas.style.width=boardW+'px';canvas.style.height=boardH+'px';ctx.setTransform(dpr,0,0,dpr,0,0);gridT={ox:PAD,oy:PAD,cs:CELL};}
 function draw(view,time){const lv=curGrid,cols=lv.cols,rows=lv.rows,cs=CELL,ox=PAD,oy=PAD;
@@ -498,20 +506,20 @@ function topicDiff(key){let arr=LEVELS.filter(l=>l.topic===key&&l.track===curren
 
 /* ===== UI strings ===== */
 const T={
-  th:{run:'รัน',step:'ทีละขั้น',reset:'รีเซ็ต',sol:'เฉลย',speed:'ความเร็ว',hint:'คำใบ้',showcode:'ดูเป็นโค้ด',steps:'ขั้นตอน',trkNocode:'บล็อก',trkCoding:'Python',block:'บล็อก',code:'Python',help:'วิธีเล่น',cmdRef:'คู่มือคำสั่ง',pickLevel:'เลือกด่าน',
-    editorBlock:'ต่อบล็อกคำสั่ง',editorCode:'เขียนโค้ด Python',win:'เยี่ยมมาก! มดถึงรังแล้ว 🎉',lose:'ยังไม่สำเร็จ ลองใหม่นะ',overlimit:'ใช้คำสั่งเกินที่กำหนด — ลองใช้ลูป/ฟังก์ชันให้สั้นลง',
+  th:{run:'รัน',step:'ทีละขั้น',reset:'รีเซ็ต',sol:'เฉลย',undo:'เลิกทำ',confirmReset:'ล้างโปรแกรมทั้งหมดแล้วเริ่มใหม่?',speed:'ความเร็ว',hint:'คำใบ้',showcode:'ดูเป็นโค้ด',steps:'ขั้นตอน',trkNocode:'บล็อก',trkCoding:'Python',block:'บล็อก',code:'Python',help:'วิธีเล่น',cmdRef:'คู่มือคำสั่ง',pickLevel:'เลือกด่าน',
+    editorBlock:'ต่อบล็อกคำสั่ง',editorCode:'เขียนโค้ด Python',win:'เยี่ยมมาก! มดถึงรังแล้ว 🎉',lose:'ยังไม่สำเร็จ ลองใหม่นะ',lose_nest:'ยังไปไม่ถึงรัง',lose_food:'ยังเก็บอาหารไม่ครบ',overlimit:'ใช้คำสั่งเกินที่กำหนด — ลองใช้ลูป/ฟังก์ชันให้สั้นลง',
     fwd:'เดินหน้า',tr:'เลี้ยวขวา',tl:'เลี้ยวซ้าย',collectb:'เก็บ',repeat:'ทำซ้ำ',whilew:'วนจนกว่า',iff:'ถ้า',ifelsew:'ถ้า/ไม่งั้น',elsew:'ไม่งั้น',times:'ครั้ง',defb:'นิยาม do()',callb:'เรียก do()',defb2:'นิยาม go()',callb2:'เรียก go()',
     api:'คำสั่งที่ใช้ได้:',used:'ใช้ไป',cmds:'คำสั่ง',best:'ดีสุด',par:'เป้าหมาย',limit:'จำกัด',drop:'แตะคำสั่งทางซ้ายเพื่อเพิ่ม (หรือลากมาวาง)',allDone:'🏆 ครบทุกด่าน! แอนท์ขนอาหารกลับรังสำเร็จ',difficulty:'ความยาก',
-    star3:'สมบูรณ์แบบ! ใช้คำสั่งน้อยที่สุด',star2:'ดีมาก ลองให้สั้นกว่านี้ดูไหม',star1:'ผ่านแล้ว! ลองใช้ลูป/ฟังก์ชันให้สั้นลง',equivCode:'โค้ด Python ที่เทียบเท่าบล็อกของคุณ',noBlocks:'# ยังไม่มีบล็อก',start:'เริ่มเล่น',runline:'บรรทัด',
+    star3:'สมบูรณ์แบบ! ใช้คำสั่งน้อยที่สุด',star2:'ดีมาก ลองให้สั้นกว่านี้ดูไหม',star1:'ผ่านแล้ว! ลองใช้ลูป/ฟังก์ชันให้สั้นลง',nudge3:'อยากได้ครบ 3 ⭐ ลองใช้ไม่เกิน {n} คำสั่ง',equivCode:'โค้ด Python ที่เทียบเท่าบล็อกของคุณ',noBlocks:'# ยังไม่มีบล็อก',start:'เริ่มเล่น',runline:'บรรทัด',
     ct_seq:'ลำดับ',ct_pattern:'หารูปแบบ',ct_logic:'ตรรกะ',ct_decomp:'แยกย่อย',ct_abstract:'นามธรรม',ct_algo:'อัลกอริทึม',topicInfo:'เรื่องราว',ctSkills:'ทักษะ CT',
     menuPick:'เกมพามดน้อย “แอนท์” ออกหาอาหารและขนกลับรัง · ฝึกแนวคิดเชิงคำนวณทีละขั้น · เลือกวิธีเล่น',modeBlock:'ลากบล็อกคำสั่งมาต่อกัน เหมาะสำหรับเริ่มต้น',modeCode:'พิมพ์โค้ด Python จริง เหมาะสำหรับต่อยอด',cmdTitle:'คู่มือคำสั่ง',
     onbTitle:'ยินดีต้อนรับ! ออกผจญภัยกับมดน้อยแอนท์ 🐜',onbSteps:['1) เลือกวิธีเล่น: 🧩 ลากวาง หรือ ⌨️ เขียนโค้ด (โจทย์เดียวกัน เล่นได้ทั้งสองแบบ)','2) อ่าน “เป้าหมาย” แล้วต่อคำสั่งเอง กด ▶ รัน หรือ ⏭ ทีละขั้น','3) แต่ละหัวข้อฝึก 1 แนวคิด (ลำดับ→ลูป→เงื่อนไข→ฟังก์ชัน→อัลกอริทึม) แล้วหัวข้อ 6 รวมทุกอย่าง · กด 📋 เลือกด่าน · 📖 คู่มือคำสั่ง'],
     cond_not_at_goal:'ยังไม่ถึงรัง',cond_can_move:'เดินได้ (ไม่มีกำแพง/น้ำ)',cond_on_star:'อยู่บนอาหาร',cond_can_turn_right:'ขวาเดินได้',cond_can_turn_left:'ซ้ายเดินได้'},
-  en:{run:'Run',step:'Step',reset:'Reset',sol:'Solution',speed:'Speed',hint:'Hint',showcode:'Show code',steps:'Steps',trkNocode:'Blocks',trkCoding:'Code',block:'Blocks',code:'Code',help:'How to play',cmdRef:'Commands',pickLevel:'Pick a level',
-    editorBlock:'Snap command blocks',editorCode:'Write Python code',win:'Great job! The ant got home 🎉',lose:'Not yet — try again',overlimit:'Too many commands — use loops/functions to shorten it',
+  en:{run:'Run',step:'Step',reset:'Reset',sol:'Solution',undo:'Undo',confirmReset:'Clear your whole program and start over?',speed:'Speed',hint:'Hint',showcode:'Show code',steps:'Steps',trkNocode:'Blocks',trkCoding:'Code',block:'Blocks',code:'Code',help:'How to play',cmdRef:'Commands',pickLevel:'Pick a level',
+    editorBlock:'Snap command blocks',editorCode:'Write Python code',win:'Great job! The ant got home 🎉',lose:'Not yet — try again',lose_nest:'didn’t reach the nest',lose_food:'still food to collect',overlimit:'Too many commands — use loops/functions to shorten it',
     fwd:'forward',tr:'turn right',tl:'turn left',collectb:'collect',repeat:'repeat',whilew:'while',iff:'if',ifelsew:'if / else',elsew:'else',times:'times',defb:'define do()',callb:'call do()',defb2:'define go()',callb2:'call go()',
     api:'Available commands:',used:'Used',cmds:'commands',best:'Best',par:'Target',limit:'Limit',drop:'tap a command on the left to add (or drag here)',allDone:'🏆 All done! Andy carried all the food home',difficulty:'Difficulty',
-    star3:'Perfect! Fewest commands.',star2:'Nice — shorter?',star1:'Cleared! Try loops/functions.',equivCode:'The Python your blocks equal',noBlocks:'# No blocks yet',start:'Start',runline:'line',
+    star3:'Perfect! Fewest commands.',star2:'Nice — shorter?',star1:'Cleared! Try loops/functions.',nudge3:'For 3★, try using ≤ {n} commands',equivCode:'The Python your blocks equal',noBlocks:'# No blocks yet',start:'Start',runline:'line',
     ct_seq:'Sequencing',ct_pattern:'Pattern',ct_logic:'Logic',ct_decomp:'Decomposition',ct_abstract:'Abstraction',ct_algo:'Algorithm',topicInfo:'Story',ctSkills:'CT skills',
     menuPick:'Guide “Andy” the ant foraging and carrying food home · build CT skills step by step · choose how to play',modeBlock:'Drag command blocks — great for starters',modeCode:'Type real Python — great for leveling up',cmdTitle:'Command reference',
     onbTitle:'Welcome! Adventure with Andy the ant 🐜',onbSteps:['1) Choose how to play: 🧩 Blocks or ⌨️ Code (same problems both ways)','2) Read the GOAL, build commands, press ▶ Run or ⏭ Step','3) Each topic trains ONE concept (sequence→loop→condition→function→algorithm), then topic 6 mixes them all · 📋 pick a level · 📖 command help'],
@@ -537,6 +545,12 @@ const CMDHELP=[
 let lang='th',cur=0,program=[],uid=1,animating=false,currentTrack='nocode',stepState=null,animTimer=null,muted=false,onboardSeen=false;
 let defBody=[],def2Body=[],useFunc=false,useFunc2=false,activeZone='main';
 function buildProgram(){const out=[];if(useFunc)out.push({type:'def',name:'do',body:defBody});if(useFunc2)out.push({type:'def2',name:'go',body:def2Body});return out.concat(program);}
+/* ----- block-edit undo: snapshot zones before each add/move/delete ----- */
+let undoStack=[];
+function snapEdit(){try{undoStack.push(JSON.stringify({p:program,a:defBody,b:def2Body}));}catch(e){return;}if(undoStack.length>80)undoStack.shift();updateUndoBtn();}
+function doUndo(){if(!undoStack.length)return;const s=JSON.parse(undoStack.pop());program=s.p;defBody=s.a;def2Body=s.b;renderProgram();updateUndoBtn();}
+function updateUndoBtn(){const u=$('undoBtn');if(u)u.disabled=undoStack.length===0;}
+function hasWork(){return curLevel.mode==='block'?countNodes(buildProgram())>0:($('codeArea').value.trim().length>0&&$('codeArea').value.trim()!==(curLevel.prefill_code||curLevel.starter||'').trim());}
 function activeArr(){return activeZone==='def'?defBody:activeZone==='def2'?def2Body:program;}
 function setActive(z){activeZone=z;['zwA','zwB','zwM'].forEach(id=>{const el=$(id);if(el)el.classList.remove('zone-active');});const map={def:'zwA',def2:'zwB',main:'zwM'};const el=$(map[z]);if(el)el.classList.add('zone-active');}
 let curLevel=LEVELS[0],curGrid=LEVELS[0].grid,displayFrame=null,prevFrame=null,tweenStart=0,tweenDur=0,particles=[];
@@ -577,7 +591,7 @@ function insertSnippet(type){const ta=$('codeArea');const s=snipFor(type);const 
 function renderPalette(){const p=$('palette');const codeMode=curLevel.mode==='code';p.className='palette'+(codeMode?' codemode':'');p.innerHTML='';(curLevel.palette||[]).forEach(type=>{
   if(codeMode){const el=document.createElement('div');el.className='cmdchip';el.textContent=CODELBL[type]||(robot.leaf({type})||'');el.title=(TIP[lang]&&TIP[lang][type])||'';el.addEventListener('click',()=>insertSnippet(type));p.appendChild(el);return;}
   if(type==='def'||type==='def2')return; /* def becomes a fixed window, not a chip */
-  const m=metaFor(type),el=document.createElement('div');el.className='pblock '+m.cls;el.draggable=true;el.title=(TIP[lang]&&TIP[lang][type])||'';el.innerHTML='<span class="ic">'+m.ic+'</span><span class="pl">'+plabel(type)+'</span>';el.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain','new:'+type));el.addEventListener('click',()=>{activeArr().push(newNode(type));renderProgram();});p.appendChild(el);
+  const m=metaFor(type),el=document.createElement('div');el.className='pblock '+m.cls;el.draggable=true;el.title=(TIP[lang]&&TIP[lang][type])||'';el.innerHTML='<span class="ic">'+m.ic+'</span><span class="pl">'+plabel(type)+'</span>';el.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain','new:'+type));el.addEventListener('click',()=>{snapEdit();activeArr().push(newNode(type));renderProgram();});p.appendChild(el);
 });}
 function makeZone(arr){const z=document.createElement('div');z.className='dropzone'+(arr.length?'':' empty');z._arr=arr;z.dataset.ph=T[lang].drop;
   z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});z.addEventListener('dragleave',()=>z.classList.remove('over'));
@@ -592,16 +606,16 @@ function renderBlock(node){const m=metaFor(node.type),b=document.createElement('
   if(node.type==='while'||node.type==='if'||node.type==='ifelse'){const sel=document.createElement('select');sel.className='condsel';sel.innerHTML=condOptions(node.cond);sel.addEventListener('change',()=>node.cond=sel.value);head.appendChild(sel);}
   const ctl=document.createElement('div');ctl.className='bctl';ctl.innerHTML='<button>▲</button><button>▼</button><button>✕</button>';
   const[up,dn,del]=ctl.querySelectorAll('button');
-  up.onclick=()=>{const l=locate(node._id);if(l&&l.idx>0){[l.arr[l.idx-1],l.arr[l.idx]]=[l.arr[l.idx],l.arr[l.idx-1]];renderProgram();}};
-  dn.onclick=()=>{const l=locate(node._id);if(l&&l.idx<l.arr.length-1){[l.arr[l.idx+1],l.arr[l.idx]]=[l.arr[l.idx],l.arr[l.idx+1]];renderProgram();}};
-  del.onclick=()=>{removeNode(node._id);renderProgram();};head.appendChild(ctl);b.appendChild(head);
+  up.onclick=()=>{const l=locate(node._id);if(l&&l.idx>0){snapEdit();[l.arr[l.idx-1],l.arr[l.idx]]=[l.arr[l.idx],l.arr[l.idx-1]];renderProgram();}};
+  dn.onclick=()=>{const l=locate(node._id);if(l&&l.idx<l.arr.length-1){snapEdit();[l.arr[l.idx+1],l.arr[l.idx]]=[l.arr[l.idx],l.arr[l.idx+1]];renderProgram();}};
+  del.onclick=()=>{snapEdit();removeNode(node._id);renderProgram();};head.appendChild(ctl);b.appendChild(head);
   if(node.body){const bd=document.createElement('div');bd.className='bbody';bd.appendChild(makeZone(node.body));b.appendChild(bd);}
   if(node.elseBody){const e=document.createElement('div');e.className='belse';e.innerHTML=STRUCT.ifelse.ic+' '+T[lang].elsew;b.appendChild(e);const eb=document.createElement('div');eb.className='bbody';eb.appendChild(makeZone(node.elseBody));b.appendChild(eb);}
   return b;}
 function handleDrop(e,targetArr,index){const data=e.dataTransfer.getData('text/plain');if(!data)return;let node;
   if(data.startsWith('new:'))node=newNode(data.slice(4));
   else if(data.startsWith('move:')){const id=parseInt(data.slice(5));const l=locate(id);if(l&&containsArr(l.arr[l.idx],targetArr))return;node=removeNode(id);if(!node)return;}
-  if(!node)return;index=Math.min(index,targetArr.length);targetArr.splice(index,0,node);renderProgram();}
+  if(!node)return;snapEdit();index=Math.min(index,targetArr.length);targetArr.splice(index,0,node);renderProgram();}
 function renderZoneInto(id,arr){const z=$(id);if(!z)return;const fresh=makeZone(arr);fresh.id=id;z.replaceWith(fresh);}
 function renderProgram(){renderZoneInto('rootZone',program);if(useFunc)renderZoneInto('defZoneA',defBody);if(useFunc2)renderZoneInto('defZoneB',def2Body);}
 function blocksToCode(program){const out=[];
@@ -623,7 +637,10 @@ function nowt(){return(window.performance&&performance.now)?performance.now():Da
 function renderLoop(t){updateParticles();if(displayFrame&&curGrid){let tn=tweenDur>0?(t-tweenStart)/tweenDur:1;draw(viewLerp(prevFrame,displayFrame,tn),t);drawParticles();}requestAnimationFrame(renderLoop);}
 requestAnimationFrame(renderLoop);
 
-function clearHighlight(){document.querySelectorAll('.block.running').forEach(e=>e.classList.remove('running'));}
+function clearHighlight(){document.querySelectorAll('.block.running,.block.failed').forEach(e=>e.classList.remove('running','failed'));const rl=$('runline');if(rl)rl.classList.remove('fail');}
+function failAt(src){if(src==null)return;
+  if(curLevel.mode==='block'){const el=document.querySelector('[data-bid="'+src+'"]');if(el){el.classList.add('failed');try{el.scrollIntoView({block:'nearest'});}catch(e){}}}
+  else{const rl=$('runline'),t=($('codeArea').value.split('\n')[src-1]||'').trim();rl.style.display='block';rl.classList.add('fail');rl.textContent='✖ '+T[lang].runline+' '+src+': '+t;}}
 function updateRunline(fr){const rl=$('runline');if(curLevel&&curLevel.mode==='code'&&fr&&fr.src!=null){const t=($('codeArea').value.split('\n')[fr.src-1]||'').trim();rl.style.display='block';rl.textContent='▶ '+T[lang].runline+' '+fr.src+': '+t;}else{rl.style.display='none';rl.textContent='';}}
 function highlight(fr){clearHighlight();if(curLevel&&curLevel.mode==='block'&&fr&&fr.src!=null){const el=document.querySelector('[data-bid="'+fr.src+'"]');if(el)el.classList.add('running');}updateRunline(fr);}
 function setFrame(prev,fr,dur){prevFrame=prev;displayFrame=fr;tweenStart=nowt();tweenDur=dur;
@@ -637,7 +654,10 @@ function clearMsg(){$('msg').className='msg';$('msg').innerHTML='';}
 function starHTML(n){let h='<span class="stars">';for(let i=0;i<3;i++)h+='<span class="star'+(i<n?' on':'')+'">★</span>';return h+'</span>';}
 function localErr(e){const p=e.message.split('/');return lang==='th'?p[0].trim():(p[1]||p[0]).trim();}
 function overLimit(){if(!curLevel.limit)return false;const used=curLevel.mode==='block'?countNodes(buildProgram()):countCodeLines($('codeArea').value);return used>curLevel.limit;}
-function finalize(r){clearHighlight();if(r.err){showMsg('bad','⚠ '+localErr(r.err));sError();}else if(r.m.won()){finishWin(r.used);sWin();spawnConfetti();}else{showMsg('bad','😅 '+T[lang].lose);sError();}}
+function finalize(r){clearHighlight();
+  if(r.err){const reason=localErr(r.err);failAt(r.m.src);showMsg('bad','⚠ '+reason);sError();}
+  else if(r.m.won()){finishWin(r.used);sWin();spawnConfetti();}
+  else{const reason=r.m.atGoal()?T[lang].lose_food:T[lang].lose_nest;showMsg('bad','😅 '+reason);sError();}}
 function runProgram(){if(animating)return;if(overLimit()){showMsg('bad','🚫 '+T[lang].overlimit);sError();return;}stepState=null;clearMsg();const r=execute();const frames=r.frames;let i=1;const tickMs=parseInt($('speed').value)||300;
   if(frames.length<=1){finalize(r);return;}animating=true;$('runBtn').disabled=true;$('stepBtn').disabled=true;
   animTimer=setInterval(()=>{setFrame(frames[i-1],frames[i],Math.min(tickMs,200));i++;if(i>=frames.length){clearInterval(animTimer);animating=false;$('runBtn').disabled=false;$('stepBtn').disabled=false;finalize(r);}},tickMs);}
@@ -646,7 +666,7 @@ function stepOnce(){if(animating)return;clearMsg();
   stepState.i++;const i=stepState.i;setFrame(stepState.frames[i-1],stepState.frames[i],180);
   if(i>=stepState.frames.length-1){const done=stepState;stepState=null;finalize(done);}}
 function finishWin(used){const par=levelPar(curLevel),st=starsFor(used,par);if(st>bestStars[cur]){bestStars[cur]=st;saveProgress();}
-  const tip=st===3?T[lang].star3:st===2?T[lang].star2:T[lang].star1;
+  const tip=st===3?T[lang].star3:T[lang].nudge3.replace('{n}',par);
   showMsg('ok','<span>'+T[lang].win+'<br><small style="font-weight:700;opacity:.85">'+tip+'</small></span>'+starHTML(st));
   $('scoreline').textContent=T[lang].used+' '+used+' '+T[lang].cmds+' · '+T[lang].par+' '+par+' · '+T[lang].best+' '+'★'.repeat(bestStars[cur]);
   updateTotals();buildSelect();if(bestStars.every(s=>s>0))setTimeout(()=>showMsg('ok',T[lang].allDone+' '+starHTML(3)),500);}
@@ -670,6 +690,7 @@ function loadLevel(idx){if(animTimer){clearInterval(animTimer);animTimer=null;}a
   let goalHtml=curLevel.goal[lang];if(curLevel.limit)goalHtml+=' <b>('+T[lang].limit+' ≤ '+curLevel.limit+' '+T[lang].cmds+')</b>';$('goalText').innerHTML='<i class="ti ti-target" style="color:var(--gold)"></i> '+goalHtml;
   $('obsBar').style.display='none';
   $('hintBox').textContent=curLevel.hint[lang];$('showCodeBtn').style.display=curLevel.mode==='block'?'':'none';$('stepsBtn').style.display=curLevel.steps?'':'none';
+  $('undoBtn').style.display=curLevel.mode==='block'?'':'none';undoStack=[];updateUndoBtn();
   if(curLevel.mode==='block'){$('blockEditor').style.display='';$('codeEditor').style.display='none';$('editorTitle').textContent=T[lang].editorBlock;
     program=[];defBody=[];def2Body=[];
     useFunc=(curLevel.palette||[]).includes('def');useFunc2=(curLevel.palette||[]).includes('def2');
@@ -685,7 +706,7 @@ function loadLevel(idx){if(animTimer){clearInterval(animTimer);animTimer=null;}a
   const onb=$('onboard').classList.contains('open')||$('menu').classList.contains('open');
   if(!onb&&!seenTopics.has(curLevel.topic)){seenTopics.add(curLevel.topic);openTopic();}}
 function openSteps(){if(!curLevel.steps)return;$('stepsTitle').textContent='📖 '+lvlName(curLevel);$('stepsBody').innerHTML=curLevel.steps[lang].map(s=>'<li>'+s+'</li>').join('');$('stepsModal').classList.add('open');}
-function loadSolution(){if(curLevel.mode==='block'){program=[];defBody=[];def2Body=[];
+function loadSolution(){if(curLevel.mode==='block'){snapEdit();program=[];defBody=[];def2Body=[];
     curLevel.solution.forEach(n=>{if(n.type==='def')defBody=clone(n.body||[]);else if(n.type==='def2')def2Body=clone(n.body||[]);else program.push(...clone([n]));});
     renderProgram();}else $('codeArea').value=curLevel.solution_code;}
 function updateTotals(){$('totStars').textContent='★ '+bestStars.reduce((a,b)=>a+b,0)+'/'+(LEVELS.length*3);}
@@ -693,7 +714,8 @@ function buildSelect(){updateTotals();}
 function buildPanel(){const body=$('lpbody');body.innerHTML='';$('lpTitle').textContent=T[lang].pickLevel;
   TOPICS.forEach(tp=>{const lvls=[];LEVELS.forEach((lv,i)=>{if(lv.track===currentTrack&&lv.topic===tp.key)lvls.push({lv,i});});if(!lvls.length)return;
     const det=document.createElement('details');det.className='lptopic';if(curLevel.topic===tp.key)det.open=true;
-    const sum=document.createElement('summary');sum.innerHTML='<span>'+topName(tp)+'</span><span class="tdiff">'+diffDots(topicDiff(tp.key))+'</span><span class="chev">▶</span>';det.appendChild(sum);
+    const done=lvls.filter(({i})=>bestStars[i]>0).length,tot=lvls.length;
+    const sum=document.createElement('summary');sum.innerHTML='<span>'+topName(tp)+'</span><span class="tprog'+(done===tot?' full':'')+'">'+done+'/'+tot+'</span><span class="tdiff">'+diffDots(topicDiff(tp.key))+'</span><span class="chev">▶</span>';det.appendChild(sum);
     lvls.forEach(({lv,i})=>{const b=document.createElement('button');b.className='lplevel'+(i===cur?' cur':'');const st=bestStars[i];let sv='';for(let k=0;k<3;k++)sv+=(k<st?'★':'<span class="o">★</span>');b.innerHTML='<span>'+lvlName(lv)+'</span><span class="lvstars">'+sv+'</span>';b.onclick=()=>{closePanel();loadLevel(i);};det.appendChild(b);});
     body.appendChild(det);});}
 function openPanel(){buildPanel();$('levelPanel').classList.add('open');$('lpdrop').classList.add('open');}
@@ -710,7 +732,7 @@ function applyLang(){document.documentElement.lang=lang;document.querySelectorAl
 function updateMute(){$('muteBtn').innerHTML=muted?'<i class="ti ti-volume-off"></i>':'<i class="ti ti-volume"></i>';}
 
 /* ----- DOM event wiring + boot ----- */
-$('runBtn').onclick=runProgram;$('stepBtn').onclick=stepOnce;$('resetBtn').onclick=()=>loadLevel(cur);$('solBtn').onclick=loadSolution;$('showCodeBtn').onclick=showCode;
+$('runBtn').onclick=runProgram;$('stepBtn').onclick=stepOnce;$('undoBtn').onclick=doUndo;$('resetBtn').onclick=()=>{if(hasWork()&&!confirm(T[lang].confirmReset))return;loadLevel(cur);};$('solBtn').onclick=loadSolution;$('showCodeBtn').onclick=showCode;
 $('closeModal').onclick=()=>$('codeModal').classList.remove('open');$('codeModal').onclick=e=>{if(e.target.id==='codeModal')$('codeModal').classList.remove('open');};
 $('stepsBtn').onclick=openSteps;$('closeSteps').onclick=()=>$('stepsModal').classList.remove('open');$('stepsModal').onclick=e=>{if(e.target.id==='stepsModal')$('stepsModal').classList.remove('open');};
 $('closeTopic').onclick=()=>$('topicModal').classList.remove('open');$('topicModal').onclick=e=>{if(e.target.id==='topicModal')$('topicModal').classList.remove('open');};
