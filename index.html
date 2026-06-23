@@ -375,10 +375,7 @@ function draw(view,time){const lv=curGrid,cols=lv.cols,rows=lv.rows,cs=CELL,ox=P
   ws.forEach(k=>{const[x,y]=k.split(',').map(Number),px=ox+x*cs,py=oy+y*cs;ctx.fillStyle='#222a41';rr(ctx,px+1.5,py+1.5,cs-3,cs-4,rad);ctx.fill();ctx.fillStyle='#313c5b';rr(ctx,px+cs*0.14,py+cs*0.1,cs*0.72,cs*0.22,rad*0.55);ctx.fill();});
   // water — soft blue tile so the area reads as an impassable pond
   (lv.water||[]).forEach(c=>{const px=ox+c[0]*cs,py=oy+c[1]*cs;ctx.fillStyle='#2f7fc4';rr(ctx,px+cs*0.08,py+cs*0.08,cs*0.84,cs*0.84,rad);ctx.fill();});
-  // queen nest (goal) — soft pulsing gold glow halo so the destination clearly pops
-  {const gx=ox+lv.goal[0]*cs,gy=oy+lv.goal[1]*cs,mx=gx+cs/2,my=gy+cs/2,pulse=0.5+0.5*Math.sin(time/360);
-   ctx.save();ctx.globalAlpha=.2+.24*pulse;ctx.fillStyle='#ffd86a';ctx.beginPath();ctx.arc(mx,my,cs*0.47,0,7);ctx.fill();ctx.restore();}
-  // items as clean emoji — high-contrast, readable at small sizes (terrain + ant stay drawn)
+  // items as clean emoji — high-contrast, readable at small sizes (terrain + ant stay drawn); goal 👑 has NO glow halo
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.font=Math.floor(cs*0.56)+'px serif';ctx.fillText('👑',ox+lv.goal[0]*cs+cs/2,oy+lv.goal[1]*cs+cs/2+cs*0.02);
   ctx.font=Math.floor(cs*0.5)+'px serif';
