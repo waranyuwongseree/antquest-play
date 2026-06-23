@@ -364,10 +364,10 @@ function sizeBoard(){const wrap=$('canvaswrap');if(!wrap||!curGrid)return;const 
 function applyCanvasSize(){const g=curGrid;if(!g)return;const dpr=window.devicePixelRatio||1;boardW=g.cols*CELL+2*PAD;boardH=g.rows*CELL+2*PAD;canvas.width=Math.round(boardW*dpr);canvas.height=Math.round(boardH*dpr);canvas.style.width=boardW+'px';canvas.style.height=boardH+'px';ctx.setTransform(dpr,0,0,dpr,0,0);gridT={ox:PAD,oy:PAD,cs:CELL};}
 function draw(view,time){const lv=curGrid,cols=lv.cols,rows=lv.rows,cs=CELL,ox=PAD,oy=PAD;
   ctx.clearRect(0,0,boardW,boardH);
-  const rad=Math.max(4,cs*0.18),lw=Math.max(1.2,cs*0.024),FLOOR=['#39456a','#404e78'];
+  const rad=Math.max(4,cs*0.18),lw=Math.max(1.2,cs*0.024),FLOOR='#3d4a72';
   const ws=new Set((lv.walls||[]).map(c=>c[0]+','+c[1]));
-  // walkable floor — calm soft two-tone
-  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const px=ox+x*cs,py=oy+y*cs;ctx.fillStyle=FLOOR[(x+y)&1];rr(ctx,px+1,py+1,cs-2,cs-2,rad);ctx.fill();}
+  // walkable floor — single uniform calm tone (no checker, reads consistent across levels/sizes)
+  ctx.fillStyle=FLOOR;for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const px=ox+x*cs,py=oy+y*cs;rr(ctx,px+1,py+1,cs-2,cs-2,rad);ctx.fill();}
   // start-tile marker — subtle dashed ROUNDED-RECT (not a circle); skip when it coincides with the goal tile
   if(lv.start&&!(lv.start[0]===lv.goal[0]&&lv.start[1]===lv.goal[1])){const px=ox+lv.start[0]*cs,py=oy+lv.start[1]*cs;ctx.save();ctx.strokeStyle='#5fd3b4';ctx.globalAlpha=.5;ctx.lineWidth=Math.max(1.3,cs*0.026);ctx.setLineDash([cs*0.16,cs*0.12]);rr(ctx,px+cs*0.17,py+cs*0.17,cs*0.66,cs*0.66,cs*0.12);ctx.stroke();ctx.restore();}
   // walls — DARK solid block + lit top edge + crisp light border + flat drop-shadow (strong contrast vs floor, even at small sizes)
