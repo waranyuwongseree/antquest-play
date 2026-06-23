@@ -368,11 +368,11 @@ function draw(view,time){const lv=curGrid,cols=lv.cols,rows=lv.rows,cs=CELL,ox=P
   const ws=new Set((lv.walls||[]).map(c=>c[0]+','+c[1]));
   // walkable floor — calm soft two-tone
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const px=ox+x*cs,py=oy+y*cs;ctx.fillStyle=FLOOR[(x+y)&1];rr(ctx,px+1,py+1,cs-2,cs-2,rad);ctx.fill();}
-  // start-tile marker — subtle dashed launch pad
-  if(lv.start){const mx=ox+lv.start[0]*cs+cs/2,my=oy+lv.start[1]*cs+cs/2;ctx.save();ctx.strokeStyle='#5fd3b4';ctx.globalAlpha=.5;ctx.lineWidth=Math.max(1.4,cs*0.028);ctx.setLineDash([cs*0.14,cs*0.1]);ctx.beginPath();ctx.arc(mx,my,cs*0.32,0,7);ctx.stroke();ctx.restore();}
-  // walls — flat drop-shadow pass, then solid block with a lit top (clearly impassable, slight depth)
-  ctx.fillStyle='rgba(6,9,18,.4)';ws.forEach(k=>{const[x,y]=k.split(',').map(Number),px=ox+x*cs,py=oy+y*cs;rr(ctx,px+2,py+cs*0.14,cs-4,cs-3,rad);ctx.fill();});
-  ws.forEach(k=>{const[x,y]=k.split(',').map(Number),px=ox+x*cs,py=oy+y*cs;ctx.fillStyle='#222a41';rr(ctx,px+1.5,py+1.5,cs-3,cs-4,rad);ctx.fill();ctx.fillStyle='#313c5b';rr(ctx,px+cs*0.14,py+cs*0.1,cs*0.72,cs*0.22,rad*0.55);ctx.fill();});
+  // start-tile marker — subtle dashed ROUNDED-RECT (not a circle); skip when it coincides with the goal tile
+  if(lv.start&&!(lv.start[0]===lv.goal[0]&&lv.start[1]===lv.goal[1])){const px=ox+lv.start[0]*cs,py=oy+lv.start[1]*cs;ctx.save();ctx.strokeStyle='#5fd3b4';ctx.globalAlpha=.5;ctx.lineWidth=Math.max(1.3,cs*0.026);ctx.setLineDash([cs*0.16,cs*0.12]);rr(ctx,px+cs*0.17,py+cs*0.17,cs*0.66,cs*0.66,cs*0.12);ctx.stroke();ctx.restore();}
+  // walls — DARK solid block + lit top edge + crisp light border + flat drop-shadow (strong contrast vs floor, even at small sizes)
+  ctx.fillStyle='rgba(4,7,16,.5)';ws.forEach(k=>{const[x,y]=k.split(',').map(Number),px=ox+x*cs,py=oy+y*cs;rr(ctx,px+2,py+cs*0.16,cs-4,cs-3,rad);ctx.fill();});
+  ws.forEach(k=>{const[x,y]=k.split(',').map(Number),px=ox+x*cs,py=oy+y*cs;ctx.fillStyle='#10162a';rr(ctx,px+1.5,py+1.5,cs-3,cs-4,rad);ctx.fill();ctx.fillStyle='#3a4a80';rr(ctx,px+cs*0.15,py+cs*0.11,cs*0.7,cs*0.18,rad*0.5);ctx.fill();ctx.strokeStyle='#4a5d93';ctx.lineWidth=Math.max(1,cs*0.035);rr(ctx,px+1.5,py+1.5,cs-3,cs-4,rad);ctx.stroke();});
   // water — soft blue tile so the area reads as an impassable pond
   (lv.water||[]).forEach(c=>{const px=ox+c[0]*cs,py=oy+c[1]*cs;ctx.fillStyle='#2f7fc4';rr(ctx,px+cs*0.08,py+cs*0.08,cs*0.84,cs*0.84,rad);ctx.fill();});
   // items as clean emoji — high-contrast, readable at small sizes (terrain + ant stay drawn); goal 👑 has NO glow halo
