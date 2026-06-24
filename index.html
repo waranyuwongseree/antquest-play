@@ -253,7 +253,6 @@
       <button class="btn step" id="stepBtn"><i class="ti ti-stairs"></i> <span data-i="step">ทีละขั้น</span></button>
       <button class="btn undo" id="undoBtn" style="display:none"><svg class="btnico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-4 -4l4 -4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/></svg> <span data-i="undo">เลิกทำ</span></button>
       <button class="btn reset" id="resetBtn" title="รีเซ็ต"><i class="ti ti-refresh"></i></button>
-      <button class="btn sol" id="solBtn"><span data-i="sol">เฉลย</span></button>
       <select class="speedsel" id="speed" title="ความเร็ว">
         <option value="520">×0.5</option>
         <option value="300" selected>×1</option>
@@ -735,9 +734,6 @@ function loadLevel(idx){if(animTimer){clearInterval(animTimer);animTimer=null;}a
   const onb=$('onboard').classList.contains('open')||$('menu').classList.contains('open');
   if(!booting&&!onb&&!seenTopics.has(curLevel.topic)){seenTopics.add(curLevel.topic);openTopic();}}
 function openSteps(){if(!curLevel.steps)return;$('stepsTitle').textContent='📖 '+lvlName(curLevel);$('stepsBody').innerHTML=curLevel.steps[lang].map(s=>'<li>'+s+'</li>').join('');$('stepsModal').classList.add('open');}
-function loadSolution(){if(curLevel.mode==='block'){snapEdit();program=[];defBody=[];def2Body=[];
-    curLevel.solution.forEach(n=>{if(n.type==='def')defBody=clone(n.body||[]);else if(n.type==='def2')def2Body=clone(n.body||[]);else program.push(...clone([n]));});
-    renderProgram();}else $('codeArea').value=curLevel.solution_code;}
 function updateTotals(){$('totStars').textContent='★ '+bestStars.reduce((a,b)=>a+b,0)+'/'+(LEVELS.length*3);}
 function buildSelect(){updateTotals();}
 function buildPanel(){const body=$('lpbody');body.innerHTML='';$('lpTitle').textContent=T[lang].pickLevel;
@@ -766,7 +762,7 @@ function toggleFs(){$('editorCard').classList.toggle('editor-fs');updateFsBtn();
 function exitFs(){if($('editorCard').classList.contains('editor-fs')){$('editorCard').classList.remove('editor-fs');updateFsBtn();}}
 
 /* ----- DOM event wiring + boot ----- */
-$('runBtn').onclick=runProgram;$('stepBtn').onclick=stepOnce;$('undoBtn').onclick=doUndo;$('resetBtn').onclick=()=>{if(hasWork()&&!confirm(T[lang].confirmReset))return;loadLevel(cur);};$('solBtn').onclick=loadSolution;$('showCodeBtn').onclick=showCode;
+$('runBtn').onclick=runProgram;$('stepBtn').onclick=stepOnce;$('undoBtn').onclick=doUndo;$('resetBtn').onclick=()=>{if(hasWork()&&!confirm(T[lang].confirmReset))return;loadLevel(cur);};$('showCodeBtn').onclick=showCode;
 $('closeModal').onclick=()=>$('codeModal').classList.remove('open');$('codeModal').onclick=e=>{if(e.target.id==='codeModal')$('codeModal').classList.remove('open');};
 $('stepsBtn').onclick=openSteps;$('closeSteps').onclick=()=>$('stepsModal').classList.remove('open');$('stepsModal').onclick=e=>{if(e.target.id==='stepsModal')$('stepsModal').classList.remove('open');};
 $('closeTopic').onclick=()=>$('topicModal').classList.remove('open');$('topicModal').onclick=e=>{if(e.target.id==='topicModal')$('topicModal').classList.remove('open');};
